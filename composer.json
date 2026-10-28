@@ -2,8 +2,12 @@
     "name": "magyp/changelog-bundle",
     "description": "Visualización de CHANGELOG.md (Keep a Changelog) para proyectos Symfony",
     "type": "symfony-bundle",
-    "version": "1.0.0",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Sebastián Garbi"
+        }
+    ],
     "require": {
         "php": ">=8.2",
         "symfony/config": "^6.4|^7.0",
