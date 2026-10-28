@@ -1,0 +1,4 @@
+app_versionado:
+    path: '%magyp.changelog.route_path%'
+    controller: Magyp\ChangelogBundle\Controller\ChangelogController::index
+    methods: [GET]

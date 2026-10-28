@@ -1,0 +1,81 @@
+{% extends layout %}
+
+{% macro cambio_item(cambio, issue_url_pattern, show_internal) %}
+  {% if show_internal or not cambio.interno %}
+    <li>
+      {% if cambio.tarea %}
+        {% if issue_url_pattern %}
+          <a href="{{ issue_url_pattern|format(cambio.tarea) }}" target="_blank" rel="noopener noreferrer">
+            <strong>Tarea #{{ cambio.tarea }}</strong>
+          </a>
+        {% else %}
+          <strong>Tarea #{{ cambio.tarea }}</strong>
+        {% endif %}
+      {% endif %}
+      {{ cambio.descripcion }}
+      {% set subitems = show_internal ? cambio.subitems : cambio.subitems|filter(subitem => not subitem.interno) %}
+      {% if subitems is not empty %}
+        <ul>
+          {% for subitem in subitems %}
+            {{ _self.cambio_item(subitem, issue_url_pattern, show_internal) }}
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </li>
+  {% endif %}
+{% endmacro %}
+
+{% import _self as versionado %}
+
+{% block title %}Historial de cambios{% endblock %}
+
+{% set colores_seccion = {
+  'Added': 'success',
+  'Changed': 'primary',
+  'Deprecated': 'secondary',
+  'Removed': 'dark',
+  'Fixed': 'warning',
+  'Security': 'danger'
+} %}
+
+{% block body %}
+  <div class="flex-grow-1 p-4">
+    <h2 class="mb-4">Historial de cambios</h2>
+
+    {% for release in app_version.changelog %}
+      <section class="mb-5">
+        <h3 class="h4 d-flex align-items-baseline gap-2 flex-wrap">
+          <span>{{ release.version }}</span>
+          {% if release.fecha %}
+            <small class="text-muted fw-normal">{{ release.fecha }}</small>
+          {% endif %}
+          {% if release.yanked %}
+            <span class="badge text-bg-danger">Retirada</span>
+          {% endif %}
+        </h3>
+
+        {% if release.descripcion %}
+          <p class="text-muted">{{ release.descripcion }}</p>
+        {% endif %}
+
+        {% for seccion, cambios in release.secciones %}
+          {% set visibles = show_internal ? cambios : cambios|filter(cambio => not cambio.interno) %}
+          {% if visibles is not empty %}
+            <h4 class="h6 mt-3">
+              <span class="badge text-bg-{{ colores_seccion[seccion] | default('secondary') }}">
+                {{ ('changelog.section.' ~ seccion)|trans }}
+              </span>
+            </h4>
+            <ul>
+              {% for cambio in cambios %}
+                {{ versionado.cambio_item(cambio, issue_url_pattern, show_internal) }}
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endfor %}
+      </section>
+    {% else %}
+      <p class="text-muted">No hay cambios publicados.</p>
+    {% endfor %}
+  </div>
+{% endblock body %}

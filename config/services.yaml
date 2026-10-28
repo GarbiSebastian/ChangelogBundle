@@ -1,0 +1,24 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Magyp\ChangelogBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/Model/'
+
+    Magyp\ChangelogBundle\Service\AppVersion:
+        arguments:
+            $changelogPath: '%magyp.changelog.changelog_path%'
+
+    Magyp\ChangelogBundle\Controller\ChangelogController:
+        arguments:
+            $layout: '%magyp.changelog.layout%'
+            $issueUrlPattern: '%magyp.changelog.issue_url_pattern%'
+            $showInternal: '%magyp.changelog.show_internal%'
+        tags: ['controller.service_arguments']
+
+    Magyp\ChangelogBundle\Twig\ChangelogExtension:
+        arguments:
+            $globalName: '%magyp.changelog.twig_global_name%'
