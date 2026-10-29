@@ -15,6 +15,12 @@ Un ítem que empieza con `[Internal]` queda en este archivo y no se muestra en e
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-29
+
+## Changed 
+
+- Changelog corregido
+
 ## [1.0.0] - 2026-10-28
 
 ### Added
